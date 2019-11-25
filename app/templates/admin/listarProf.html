@@ -1,0 +1,51 @@
+{% extends 'base.html'%}
+
+{% block content %}
+<title>{% block title %} Excluir Professor {% endblock %}</title>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="collapse navbar-collapse" id="conteudoNavbarSuportado">
+    <ul class="navbar-nav mr-auto">
+      
+    </ul>
+    <form action="http://127.0.0.1:5000/login" method="POST" >
+      <button  class="btn btn-light" type="submit">Voltar</button>
+    </form>
+  </div>
+</nav>
+<div style="margin-left: 400px;">
+  <h1>Lista dos professores:</h1>
+</div>
+<table class="table">
+
+        <thead>
+          <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Nome</th>
+            <th scope="col">Formação</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for row in listaM %}
+            <tr>
+            <th scope="row"> {{ row['id'] }}</th>
+            <td>{{ row['nome'] }}</td>
+            <td>{{ row['afiliacao'] }}</td>
+          
+
+          </tr>
+
+
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <form action="" method="POST">
+        {{ form.csrf_token }}
+        <label>Digite o nome do professor que deseja procurar:</label>
+        {{ form.nome(placeholder="nome", size="30") }}
+        </br>
+        <button type="submit" class="btn btn-primary">Procurar</button>
+      </form>
+
+{% endblock %}

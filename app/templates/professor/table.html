@@ -1,0 +1,90 @@
+{% extends "professor/base.html" %}
+
+{% block title %}Notas {{ materia }}{% endblock %}
+
+{% block headcontent %}
+    <script type="text/javascript">
+        var number = 0;
+
+        function count(){
+            number = number + 1;
+
+            document.write(number);
+        }      
+
+        function execute(id_aluno, id_mat){
+            try {
+                valor = document.getElementById(id_aluno).value;
+
+                //Inicializa o processo para comunicar com a API
+                var xhr = new XMLHttpRequest();
+
+                /*xhr.onload=function(e) {
+                    alert("teste");
+                    if(this.readyState === 4) {
+                    }
+                };*/
+
+                json = '{"aluno_id": "' + id_aluno + '", "mat_id": "' + id_mat + '", "nota": "' + valor + '"}';
+                //json = JSON.stringify({aluno_id: String(id_aluno), mat_id: String(id_mat), nota: String(valor)});
+
+                var url = 'http://127.0.0.1:5000/db/nota/atualizar';
+                xhr.open('POST',url,true);
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.send(json);
+                }
+            catch(err) {
+                alert(err);
+            }
+        }
+    </script>
+{% endblock %}
+
+<!--Início no Body-->
+
+{% block page_content %}
+    <h1>{{ materia }}</h1>
+    <form>
+        <ul>
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Nome</th>
+                        <th scope="col">Matrícula</th>
+                        <th scope="col">Nota</th>
+                        <th scope="col">Editar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for lista in lista_alunos %}
+                        <tr>
+                            <th scope="row">
+                                <script type="text/javascript">
+                                    count();
+                                </script>
+                            </th>
+                            <td>{{ lista['nome'] }}</td>
+                            <td>{{ lista['aluno_id'] }}</td>
+                            <td><input id="{{ lista['aluno_id'] }}" type="number" name="quantity" min="0" max="100" value="{{ lista['nota'] }}" placeholder="{{ lista['nota'] }}"></td>
+                            <td>
+                                <button onclick="execute({{ lista['aluno_id'] }}, {{ id_mat }})">
+                                    Editar Nota
+                                </button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </ul>
+        <input type="reset">
+    </form>
+    </br>
+    <form action="" method="POST">
+        {{ form.csrf_token }}
+        <label>Digite o nome do aluno que deseja procurar:</label>
+        {{ form.nome(placeholder="nome", size="30") }}
+        </br>
+        <button type="submit" class="btn btn-primary">Procurar</button>
+    </form>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'base.html'%}
+
+{% block content %}
+<title>{% block title %} Cadastro Aluno {% endblock %}</title>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="collapse navbar-collapse" id="conteudoNavbarSuportado">
+        <ul></ul><ul></ul><ul></ul><ul></ul><ul></ul><ul></ul><ul></ul><ul></ul>
+        <ul></ul><ul></ul>
+        <ul class="navbar-nav mr-auto">
+                <h1>Inserção de alunos:</h1>
+        </ul>
+        <form action="http://127.0.0.1:5000/login" method="POST" >
+          <button  class="btn btn-light" type="submit">Voltar</button>
+        </form>
+      </div>
+</nav>
+{% for message in get_flashed_messages() %}
+        <div class="alert alert-warning"> {{message}}</div>
+{% endfor %}
+<div class="container">
+      <div style=" width: 50%; margin-left: 300px; margin-top: 50px;">
+          <h2>Cadastro Aluno</h2>
+          <form action="/signupAluno" method="POST">
+              {{ form.csrf_token }}
+              <div class="form-group">
+                  <br>
+                  {{ form.username(class="form-control", placeholder="Nome") }}
+              </div>
+            
+              <div class="form-group">
+                  <br>
+                  {{ form.password(class="form-control", placeholder="Senha") }}
+              </div>
+            
+              <div class="form-group">
+                  <br>
+                  {{ form.curso(class="form-control", placeholder="Curso") }}
+              </div>
+            
+              <button type="submit" class="btn btn-primary">Cadastrar</button>
+
+          </form>
+    </div>
+</div>
+
+{% endblock %}

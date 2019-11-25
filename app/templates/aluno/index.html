@@ -1,0 +1,27 @@
+{% extends 'base.html'%}
+
+{% block content %}
+<title>{% block title %} Aluno {% endblock %}</title>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+        
+      
+        <div class="collapse navbar-collapse" id="conteudoNavbarSuportado">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Histórico
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="{{ url_for('matricularMateria') }}" >Matrícular</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{{ url_for('visualizarMaterias') }}"  >Visualizar</a>
+              </div>
+      </li>
+          </ul>
+          <form action="/login" class="form-inline my-2 my-lg-0">
+            <a class="btn btn-ligh" href="http://127.0.0.1:5000/sair">Sair</a>
+          </form>
+        </div>
+      </nav>
+{% endblock %}
