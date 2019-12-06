@@ -12,7 +12,7 @@
                 <h1>Remoção de alunos:</h1>
         </ul>
     </ul>
-    <form action="http://127.0.0.1:5000/login" method="POST" >
+    <form action="{{ url_for('login')}}" method="POST" >
       <button  class="btn btn-light" type="submit">Voltar</button>
     </form>
   </div>
@@ -33,7 +33,7 @@
             <td>{{ row['nome'] }}</td>
             <td>{{ row['curso'] }}</td>
 
-            <form method="POST" action="/excluirAluno2">
+            <form method="POST" action="{{ url_for('excluirAluno2') }}">
               <td>
                   <button type="submit" class="btn btn-outline-danger" name="id" value= {{ row['id'] }} >Excluir</button>
               </td>

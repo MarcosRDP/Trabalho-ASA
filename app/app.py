@@ -23,13 +23,13 @@ infoUsuario = 0
 def base():
     global permissao
     if(permissao == 0): #Página de login
-        return redirect("http://127.0.0.1:5000/login", code=302)
+        return redirect(url_for('login'), code=302)
     if(permissao == 1): #Página do aluno
-        return redirect("http://127.0.0.1:5000/aluno", code=302)
+        return redirect(url_for('loginAluno'), code=302)
     if(permissao == 2): #Página do professor
-        return redirect("http://127.0.0.1:5000/professor", code=302)
+        return redirect(url_for('show_professor_perfil'), code=302)
     if(permissao == 3): #Página do admin
-        return redirect("http://127.0.0.1:5000/admin", code=302)
+        return redirect(url_for('signup'), code=302)
 
 #Tela de Login
 @app.route('/login', methods=['POST','GET'])
@@ -39,11 +39,11 @@ def login():
     global infoUsuario
 
     if(permissao == 1): #Página do aluno
-        return redirect("http://127.0.0.1:5000/aluno", code=302)
+        return redirect(url_for('loginAluno'), code=302)
     if(permissao == 2): #Página do professor
-        return redirect("http://127.0.0.1:5000/professor", code=302)
+        return redirect(url_for('show_professor_perfil'), code=302)
     if(permissao == 3): #Página do admin
-        return redirect("http://127.0.0.1:5000/admin", code=302)
+        return redirect(url_for('signup'), code=302)
 
     form = loginForm()
     db = DbUtils()
@@ -62,11 +62,11 @@ def login():
         if(result == 1): #Caso onde um aluno fez login
             usuario = form.username.data #Atualiza ID do usuário
             #Carrega página adequada
-            return redirect("http://127.0.0.1:5000/aluno", code=302) 
+            return redirect(url_for('loginAluno'), code=302) 
         if(result == 2): #Caso onde um professor fez login
             usuario = form.username.data #Atualiza ID do usuário
             #Carrega página adequada
-            return redirect("http://127.0.0.1:5000/professor/perfil")
+            return redirect(url_for('show_professor_perfil'))
         if(result == 3): #Caso onde um admin fez login
             usuario = form.username.data #Atualiza ID do usuário
             #Carrega página adequada
@@ -86,7 +86,7 @@ def logoff(): #Limpa todas as informações do usuário
     permissao = 0
     infoUsuario = 0
     #Envia para a tela de login
-    return redirect("http://127.0.0.1:5000/login", code=302)
+    return redirect(url_for('login'), code=302)
 
 #Telas do Admin
 
@@ -96,16 +96,16 @@ def signup():
     global permissao
     if(permissao != 3): #Caso a permissão do usuário não seja adequada
         #Carrega a página base
-        return redirect("http://127.0.0.1:5000/", code=302)
+        return redirect(url_for('base'), code=302)
     return render_template('admin/index.html',infoUsuario = infoUsuario)
 
 #Tela de Cadastro do aluno
-@app.route('/signupAluno', methods=['GET','POST'])
+@app.route('/admin/cadastrar/aluno', methods=['GET','POST'])
 def signupAluno():
     global permissao
     if(permissao != 3): #Caso a permissão do usuário não seja adequada
         #Carrega a página base
-        return redirect("http://127.0.0.1:5000/", code=302)
+        return redirect(url_for('base'), code=302)
     form = registerFormAluno()
     db = DbUtils()
     if form.validate_on_submit():
@@ -117,12 +117,12 @@ def signupAluno():
             flash("Aluno já cadastrado. Por favor verifique os dados!")
     return render_template('admin/signupAluno.html', form=form)
 
-@app.route('/listarProf', methods=['GET','POST'])
+@app.route('/admin/professores', methods=['GET','POST'])
 def listarProf():
     global permissao
     if(permissao != 3): #Caso a permissão do usuário não seja adequada
         #Carrega a página base
-        return redirect("http://127.0.0.1:5000/", code=302)
+        return redirect(url_for('base'), code=302)
     dbUtils = DbUtils()
     listaM = []
 
@@ -144,12 +144,12 @@ def listarProf():
     return render_template('admin/listarProf.html', listaM = listaM, form = form)
 
 #Tela de Cadastro do Professor
-@app.route('/signupProf', methods=['GET','POST'])
+@app.route('/admin/cadastrar/professor', methods=['GET','POST'])
 def signupProf():
     global permissao
     if(permissao != 3): #Caso a permissão do usuário não seja adequada
         #Carrega a página base
-        return redirect("http://127.0.0.1:5000/", code=302)
+        return redirect(url_for('base'), code=302)
     form = registerFormProf()
     db = DbUtils()
     result = db.ListarProfessores()
@@ -168,12 +168,12 @@ def signupProf():
     return render_template('admin/signupProf.html', form=form, listaM = listaM)
 
 #Tela de Cadastro de Materia
-@app.route('/addMaterias', methods=['GET','POST'])
+@app.route('/admin/cadastrar/materia', methods=['GET','POST'])
 def addMaterias():
     global permissao
     if(permissao != 3): #Caso a permissão do usuário não seja adequada
         #Carrega a página base
-        return redirect("http://127.0.0.1:5000/", code=302)
+        return redirect(url_for('base'), code=302)
     form = registerFormMateria()
     db = DbUtils()
     result = db.ListarProfessores()
@@ -194,12 +194,12 @@ def addMaterias():
     return render_template('admin/addMaterias.html', form=form, listaM = listaM)
 
 #Tela de Remoção do Professor
-@app.route('/excluirProf', methods=['GET','POST'])
+@app.route('/admin/deletar/professor', methods=['GET','POST'])
 def excluirProf():
     global permissao
     if(permissao != 3): #Caso a permissão do usuário não seja adequada
         #Carrega a página base
-        return redirect("http://127.0.0.1:5000/", code=302)
+        return redirect(url_for('base'), code=302)
     dbUtils = DbUtils()
     listaM = []
 
@@ -222,12 +222,12 @@ def excluirProf():
     return render_template('admin/excluirProf.html', listaM = listaM, form = form)
 
 #Tela de Remoção do Professor 2
-@app.route('/excluirProf2/', methods=['POST'])
+@app.route('/exclusao/01', methods=['POST'])
 def excluirProf2():
     global permissao
     if(permissao != 3): #Caso a permissão do usuário não seja adequada
         #Carrega a página base
-        return redirect("http://127.0.0.1:5000/", code=302)
+        return redirect(url_for('base'), code=302)
     if request.method == 'POST':
     #data = id_prof
         dbUtils = DbUtils()
@@ -237,12 +237,12 @@ def excluirProf2():
         return render_template('admin/index.html', infoUsuario = infoUsuario)
 
 #Tela de Remoção do Aluno
-@app.route('/excluirAluno', methods=['GET','POST'])
+@app.route('/admin/deletar/aluno', methods=['GET','POST'])
 def excluirAluno():
     global permissao
     if(permissao != 3): #Caso a permissão do usuário não seja adequada
         #Carrega a página base
-        return redirect("http://127.0.0.1:5000/", code=302)
+        return redirect(url_for('base'), code=302)
     dbUtils = DbUtils()
     listaM = []
 
@@ -265,12 +265,12 @@ def excluirAluno():
     return render_template('admin/excluirAluno.html', listaM = listaM, form = form)
 
 #Tela de Remoção do Aluno 2
-@app.route('/excluirAluno2/', methods=['POST'])
+@app.route('/exclusao/02', methods=['POST'])
 def excluirAluno2():
     global permissao
     if(permissao != 3): #Caso a permissão do usuário não seja adequada
         #Carrega a página base
-        return redirect("http://127.0.0.1:5000/", code=302)
+        return redirect(url_for('base'), code=302)
     if request.method == 'POST':
     #data = id_prof
         dbUtils = DbUtils()
@@ -280,12 +280,12 @@ def excluirAluno2():
         return render_template('admin/index.html', infoUsuario = infoUsuario)
 
 #Tela de Remoção de Matéria
-@app.route('/excluirMateria', methods=['GET','POST'])
+@app.route('/admin/deletar/materia', methods=['GET','POST'])
 def excluirMateria():
     global permissao
     if(permissao != 3): #Caso a permissão do usuário não seja adequada
         #Carrega a página base
-        return redirect("http://127.0.0.1:5000/", code=302)
+        return redirect(url_for('base'), code=302)
     dbUtils = DbUtils()
     listaM = []
 
@@ -308,12 +308,12 @@ def excluirMateria():
     return render_template('admin/excluirMaterias.html', listaM = listaM, form = form)
 
 #Tela de Remoção de Matéria 2
-@app.route('/excluirMaterias2', methods=['GET','POST'])
+@app.route('/exclusao/03', methods=['GET','POST'])
 def excluirMateria2():
     global permissao
     if(permissao != 3): #Caso a permissão do usuário não seja adequada
         #Carrega a página base
-        return redirect("http://127.0.0.1:5000/", code=302)
+        return redirect(url_for('base'), code=302)
     if request.method == 'POST':
         dbUtils = DbUtils()
         data =  request.form['id']
@@ -328,10 +328,10 @@ def professor():
     global permissao
     if(permissao == 2): #Verifica se tem a permissão de professor
         #Direciona para a tela principal do professor
-        return redirect("http://127.0.0.1:5000/professor/perfil", code=302)
+        return redirect(url_for('show_professor_perfil'), code=302)
     else: #Caso não tenha
         #Direciona para a tela de login
-        return redirect("http://127.0.0.1:5000/login", code=302)
+        return redirect(url_for('login'), code=302)
 
 #Tela de Transferência 2
 @app.route('/professor/')
@@ -339,10 +339,10 @@ def professor2():
     global permissao
     if(permissao == 2): #Verifica se tem a permissão de professor
         #Direciona para a tela principal do professor
-        return redirect("http://127.0.0.1:5000/professor/perfil", code=302)
+        return redirect(url_for('show_professor_perfil'), code=302)
     else: #Caso não tenha
         #Direciona para a tela de login
-        return redirect("http://127.0.0.1:5000/login", code=302)
+        return redirect(url_for('login'), code=302)
 
 #Tela principal do professor, seu perfil
 @app.route('/professor/perfil')
@@ -351,7 +351,7 @@ def show_professor_perfil():
     global permissao
     if(permissao != 2): #Verifica se tem a permissão de professor
         #Caso não possua volta para a tela de login
-        return redirect("http://127.0.0.1:5000/login", code=302)
+        return redirect(url_for('login'), code=302)
 
     dbUtils = DbUtils() #Comunica com a base de dados e recebe todas as matéria do professor
     result = dbUtils.NovoSelecionarMateriaProfessor(usuario)
@@ -378,11 +378,11 @@ def get_professor_materia(mat):
     global permissao
     if(permissao != 2): #Verifica se tem a permissão de professor
         #Caso não possua volta para a tela de login
-        return redirect("http://127.0.0.1:5000/login", code=302)
+        return redirect(url_for('login'), code=302)
 
     materia = mat #Salva a matéria selecionada como global
     #Chama a página das notas da matéria selecionada
-    return redirect("http://127.0.0.1:5000/professor/notas", code=302)
+    return redirect(url_for('show_notas'), code=302)
 
 #Página de atualização de notas da matéria selecionada
 @app.route('/professor/notas', methods=['POST','GET'])
@@ -392,10 +392,10 @@ def show_notas():
     global permissao
     if(permissao != 2): #Verifica se tem a permissão de professor
         #Caso não possua volta para a tela de login
-        return redirect("http://127.0.0.1:5000/login", code=302)
+        return redirect(url_for('login'), code=302)
 
     if(materia == 0): #Caso nenhuma matéria tenha sido selecionada, retorna para o perfil
-        return redirect("http://127.0.0.1:5000/professor/perfil", code=302)
+        return redirect(url_for('show_professor_perfil'), code=302)
 
     dbUtils = DbUtils()
     result = dbUtils.NovoSelecionarMateriaProfessor(usuario)
@@ -452,16 +452,16 @@ def loginAluno():
     global permissao
     if(permissao != 1): #Verifica se tem a permissão de aluno
         #Caso não possua volta para a tela de login
-        return redirect("http://127.0.0.1:5000/login", code=302)
+        return redirect(url_for('login'), code=302)
     return render_template('aluno/index.html')    
 
 #Tela de cadastro na matricula
-@app.route('/matricularMateria', methods=['GET','POST'] )
+@app.route('/aluno/matricular', methods=['GET','POST'] )
 def matricularMateria():
     global permissao
     if(permissao != 1): #Verifica se tem a permissão de aluno
         #Caso não possua volta para a tela de login
-        return redirect("http://127.0.0.1:5000/login", code=302)
+        return redirect(url_for('login'), code=302)
     
     form = matriculaMateria()
     db = DbUtils()
@@ -473,12 +473,12 @@ def matricularMateria():
     return render_template('aluno/matricular.html', form=form)
 
 #Tela de vizualização das matérias do aluno
-@app.route('/visualizarMaterias')
+@app.route('/aluno/materias')
 def visualizarMaterias():
     global permissao
     if(permissao != 1): #Verifica se tem a permissão de aluno
         #Caso não possua volta para a tela de login
-        return redirect("http://127.0.0.1:5000/login", code=302)
+        return redirect(url_for('login'), code=302)
     
     dbUtils = DbUtils()
     result = dbUtils.ListarMateriasDoAluno(usuario)

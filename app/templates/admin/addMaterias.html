@@ -27,7 +27,7 @@
         </li>
 
       </ul>
-      <form action="http://127.0.0.1:5000/login" method="POST" >
+      <form action="{{ url_for('login')}}" method="POST" >
         <button  class="btn btn-light" type="submit">Voltar</button>
       </form>
     </div>
@@ -39,7 +39,7 @@
     {% endfor %}
       <div style=" width: 50%; margin-left: 300px; margin-top: 50px;">
           <h2>Cadastro de matérias</h2>
-          <form action="/addMaterias" method="POST">
+          <form action="{{ url_for('addMaterias')}}" method="POST">
               {{ form.csrf_token }}
               <div class="form-group">
                   <br>

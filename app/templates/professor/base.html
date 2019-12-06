@@ -24,20 +24,20 @@
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
                 <div class="collapse navbar-collapse" id="conteudoNavbarSuportado">
                     <ul class="navbar-nav mr-auto">
-                        <a class="nav-item nav-link active" href="http://127.0.0.1:5000/professor/perfil">Home<span class="sr-only">(current)</span></a>
+                        <a class="nav-item nav-link active" href="{{ url_for('professor')}}">Home<span class="sr-only">(current)</span></a>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Materias
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                                 {% for info in listaM %}
-                                    <a class="dropdown-item" href="http://127.0.0.1:5000/professor/selecionar/materia/{{ info['id'] }}">{{ info['curso'] }}</a>
+                                    <a class="dropdown-item" href="{{ url_for('get_professor_materia', mat=info['id']) }}">{{ info['curso'] }}</a>
                                 {% endfor %}
                             </div>
                         </li>
                     </ul>
                     <form class="form-inline my-2 my-lg-0">
-                        <a class="btn btn-ligh" href="http://127.0.0.1:5000/sair">Sair</a>
+                        <a class="btn btn-ligh" href="{{ url_for('logoff')}}">Sair</a>
                     </form>
                 </div>
             </nav>

@@ -1,25 +1,32 @@
-var number = 0;
-
-function count(){
-    number = number + 1
-    document.write(number);
-}      
-
-function execute(id_aluno, id_mat){
-    try {
-        valor = document.getElementById(id_aluno).value;
-
-        //Inicializa o processo para comunicar com a API
-        var xhr = new XMLHttpRequest();
-
-        json = '{"aluno_id": "' + id_aluno + '", "mat_id": "' + id_mat + '", "nota": "' + valor + '"}';
-            
-        var url = 'http://127.0.0.1:5000/db/nota/atualizar';
-        xhr.open('POST',url,true);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.send(json);
-        }
-    catch(err) {
-        alert(err);
-    }
-}
+$(function() {
+    $('#btn_edit').click(function() {
+        //alert(val('url'));
+        alert(val('mat'));
+        alert(val('id'));
+        alert(val('aluno'));
+        /*$.ajax({
+            url: "/",
+            callback: 'callback',
+            crossDomain: true,
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'application/json',
+            complete: function(data){
+                alert(data.status);// $1000
+                var myResult = data
+                console.log(myResult);
+                var myDict = JSON.parse(data.responseText);
+                var len = myDict.lenght;
+                var list_html = "<ol>";
+                for(var i=0;i<len;i++){
+                     list_html += "<li>" + myDict[i].nome + " " + myDict[i].idade + " " + myDict[i].curso + "</li";
+                     console.log(myDict[i])
+                }
+                list_html += "</ol"
+                $("#jsonlist").html(list_html);
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });*/
+    });    
+});
