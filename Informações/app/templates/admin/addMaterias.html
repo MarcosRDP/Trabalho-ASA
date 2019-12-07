@@ -1,0 +1,75 @@
+{% extends 'base.html'%}
+
+{% block headcontent %}
+  <script type="text/javascript" src="static/js/selectscript.js"></script>
+  <link rel="stylesheet" type="text/css" href="static/css/editablecombobox.css">
+{% endblock %}
+
+{% block content %}
+<title>{% block title %} Adicionar Matérias {% endblock %}</title>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+        
+      
+    <div class="collapse navbar-collapse" id="conteudoNavbarSuportado">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Listar professores
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              {% for row in listaM %}
+            <a class="dropdown-item">Professor: {{row['nome']}}</a>
+            <div class="dropdown-divider"></div>
+            {% endfor %}
+          </div>
+        </li>
+
+      </ul>
+      <form action="{{ url_for('login')}}" method="POST" >
+        <button  class="btn btn-light" type="submit">Voltar</button>
+      </form>
+    </div>
+</nav>
+
+<div class="container">
+    {% for message in get_flashed_messages() %}
+        <div class="alert alert-warning"> {{message}}</div>
+    {% endfor %}
+      <div style=" width: 50%; margin-left: 300px; margin-top: 50px;">
+          <h2>Cadastro de matérias</h2>
+          <form action="{{ url_for('addMaterias')}}" method="POST">
+              {{ form.csrf_token }}
+              <div class="form-group">
+                  <br>
+                  {{ form.nomeMateria(class="form-control", placeholder="Nome da matéria") }}
+              </div>
+            
+              <div class="form-group">
+                  <br>
+                  {{ form.nomeProfessor(class="form-control", placeholder="Nome do professor") }}
+              </div>
+            
+            
+              <button type="submit" class="btn btn-primary">Cadastrar</button>
+
+          </form>
+    </div>
+</div>
+
+<!--<div class="dropdown">
+    <button onclick="myFunction()" class="dropbtn">Dropdown</button>
+    <div id="myDropdown" class="dropdown-content">
+      <input type="text" placeholder="Search.." id="myInput" onkeyup="filterFunction()">
+      <a href="#about">About</a>
+      <a href="#base">Base</a>
+      <a href="#blog">Blog</a>
+      <a href="#contact">Contact</a>
+      <a href="#custom">Custom</a>
+      <a href="#support">Support</a>
+      <a href="#tools">Tools</a>
+    </div>
+</div> -->
+
+{% endblock %}

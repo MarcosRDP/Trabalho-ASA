@@ -1,0 +1,18 @@
+{% extends "professor/base.html" %}
+
+{% block title %}Perfil do Professor{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <div class="card">
+        <div class="card-body">
+            <h2>{{ user['nome'] }} - {{ id }}</h2>
+            <h4>Afiliação: {{ user['afiliacao'] }}</h4>
+            <h5>Matérias:</h5>
+            {% for info in listaM %}
+                <p>- {{ info['curso'] }}</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

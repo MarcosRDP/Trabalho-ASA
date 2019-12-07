@@ -1,0 +1,55 @@
+{% extends 'base.html'%}
+
+{% block content %}
+<title>{% block title %} Excluir Matérias {% endblock %}</title>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="collapse navbar-collapse" id="conteudoNavbarSuportado">
+    <ul class="navbar-nav mr-auto">
+        <ul></ul><ul></ul><ul></ul><ul></ul><ul></ul><ul></ul><ul></ul><ul></ul>
+        <ul></ul><ul></ul>
+        <ul class="navbar-nav mr-auto">
+                <h1>Remoção de Matérias:</h1>
+        </ul>
+    </ul>
+    <form action="{{ url_for('login') }}" method="POST" >
+      <button  class="btn btn-light" type="submit">Voltar</button>
+    </form>
+  </div>
+</nav>
+<table class="table">
+
+        <thead>
+          <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Nome</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for row in listaM %}
+            <tr>
+            <th scope="row"> {{ row['id'] }}</th>
+            <td>{{ row['curso'] }}</td>
+
+            <form method="POST" action="{{ url_for('excluirMateria2') }}">
+              <td>
+                  <button type="submit" class="btn btn-outline-danger" name="id" value= {{ row['id'] }} >Excluir</button>
+              </td>
+            </form>            
+
+          </tr>
+
+
+          {% endfor %}
+        </tbody>
+      </table>
+
+    <form action="" method="POST">
+      {{ form.csrf_token }}
+      <label>Digite o nome da matéria que deseja procurar:</label>
+      {{ form.nome(placeholder="nome", size="30") }}
+      </br>
+      <button type="submit" class="btn btn-primary">Procurar</button>
+    </form>
+
+{% endblock %}

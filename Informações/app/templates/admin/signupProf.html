@@ -1,0 +1,56 @@
+{% extends 'base.html'%}
+
+{% block content %}
+<title>{% block title %} Cadastro Professor{% endblock %}</title>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <div class="collapse navbar-collapse" id="conteudoNavbarSuportado">
+          <ul class="navbar-nav mr-auto">
+                <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          Lista de professores
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            {% for row in listaM %}
+                          <a class="dropdown-item">Professor: {{row['nome']}}</a>
+                          <div class="dropdown-divider"></div>
+                          {% endfor %}
+                        </div>
+                      </li>
+          </ul>
+          <form action="{{ url_for('login')}}" method="POST" >
+            <button  class="btn btn-light" type="submit">Voltar</button>
+          </form>
+        </div>
+</nav>
+{% for message in get_flashed_messages() %}
+        <div class="alert alert-warning"> {{message}}</div>
+{% endfor %}
+<div class="container">
+      <div style=" width: 50%; margin-left: 300px; margin-top: 50px;">
+          <h2>Cadastro Professor</h2>
+          <form action="{{ url_for('signupProf')}}" method="POST">
+              {{ form.csrf_token }}
+              <div class="form-group">
+                  <br>
+                  {{ form.username(class="form-control", placeholder="Nome") }}
+              </div>
+            
+              <div class="form-group">
+                  <br>
+                  {{ form.password(class="form-control", placeholder="Senha") }}
+              </div>
+            
+              <div class="form-group">
+                  <br>
+                  {{ form.afiliacao(class="form-control", placeholder="Afiliação") }}
+              </div>
+            
+              <button type="submit" class="btn btn-primary">Cadastrar</button>
+
+          </form>
+    </div>
+</div>
+
+{% endblock %}
