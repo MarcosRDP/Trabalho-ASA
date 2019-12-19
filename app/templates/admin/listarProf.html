@@ -4,12 +4,45 @@
 <title>{% block title %} Excluir Professor {% endblock %}</title>
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="collapse navbar-collapse" id="conteudoNavbarSuportado">
-    <ul class="navbar-nav mr-auto">
+        
       
+  <div class="collapse navbar-collapse" id="conteudoNavbarSuportado">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Professores
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="{{ url_for('signupProf')}}">Inserir</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="{{ url_for('excluirProf')}}">Remover</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="{{ url_for('listarProf')}}">Listar</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Alunos
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="{{ url_for('signupAluno')}}">Inserir</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{{ url_for('excluirAluno')}}">Remover</a>
+              </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Matérias
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="{{ url_for('addMaterias')}}">Adicionar</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="{{ url_for('excluirMateria')}}">Remover</a>
+        </div>
+</li>
     </ul>
-    <form action="{{ url_for('login') }}" method="POST" >
-      <button  class="btn btn-light" type="submit">Voltar</button>
+    <form action="{{ url_for('login') }}" class="form-inline my-2 my-lg-0">
+      <a class="btn btn-ligh" href="{{ url_for('logoff') }}">Sair</a>
     </form>
   </div>
 </nav>
@@ -22,13 +55,13 @@
           <tr>
             <th scope="col">Id</th>
             <th scope="col">Nome</th>
-            <th scope="col">Formação</th>
+            <th scope="col">Filiação</th>
           </tr>
         </thead>
         <tbody>
             {% for row in listaM %}
             <tr>
-            <th scope="row"> {{ row['id'] }}</th>
+            <th scope="row"> {{ row['matricula'] }}</th>
             <td>{{ row['nome'] }}</td>
             <td>{{ row['afiliacao'] }}</td>
           

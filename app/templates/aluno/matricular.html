@@ -2,25 +2,55 @@
 
 {% block content %}
 <title>{% block title %} Matricular {% endblock %}</title>
-<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+</head>
 
 <div class="container">
-      <div style=" width: 50%; margin-left: 300px; margin-top: 50px;">
-          <h2>Matricular matéria</h2>
-          <form action="{{ url_for('matricularMateria') }}" method="POST">
-              {{ form.csrf_token }}
-              <div class="form-group">
-                  <br>
-                  {{ form.nome(class="form-control", placeholder="Nome da matéria") }}
-              </div>
-            
-            
-            
-              <button type="submit" class="btn btn-primary">Cadastrar</button>
+    {% for message in get_flashed_messages() %}
+        <div class="alert alert-warning"> {{message}}</div>
+    {% endfor %}
+    <table class="table">
 
-          </form>
-    </div>
+            <thead>
+              <tr>
+                <th scope="col">Professor</th>
+                <th scope="col">Matéria</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for row in listaM %}
+                <tr>
+                <th scope="row"> {{ row['nome'] }}</th>
+                <td>{{ row['curso'] }}</td>
+    
+                <form method="POST" action="/aluno/matricular">
+                  <td>
+                      <button type="submit" class="btn btn-primary" name="id" value= {{ row['id'] }} >Matricular</button>
+                  </td>
+                </form>            
+    
+              </tr>
+    
+    
+              {% endfor %}
+            </tbody>
+    </table>
 </div>
+
+<form action="" method="POST">
+  {{ form.csrf_token }}
+  <label>Digite o nome da matéria que deseja procurar:</label>
+  {{ form.nome(placeholder="nome", size="30") }}
+  </br>
+  <button type="submit" class="btn btn-primary">Procurar</button>
+</form>
 
 {% endblock %}

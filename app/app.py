@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, render_template, url_for, json, abort, redirect
+from flask import Flask, jsonify, request, render_template, url_for, json, abort, redirect, flash
 from flask_wtf import FlaskForm
 from models.forms import loginForm, registerFormProf, registerFormAluno, registerFormMateria, matriculaMateria, SelectTable
 from models.dbutils import DbUtils
@@ -6,7 +6,6 @@ from wtforms import StringField, PasswordField, BooleanField
 from wtforms.validators import DataRequired, InputRequired, Email, Length
 from flask_sqlalchemy import SQLAlchemy
 from flask_bootstrap import Bootstrap
-from flask import flash
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'minha palavra secreta'
@@ -37,6 +36,7 @@ def login():
     global usuario
     global permissao
     global infoUsuario
+    global curso
 
     if(permissao == 1): #Página do aluno
         return redirect(url_for('loginAluno'), code=302)
@@ -52,6 +52,7 @@ def login():
         resultado = db.VerificaLogin(form.username.data,form.password.data)
         if(resultado == False):
             flash("Dados de login incorretos! Por favor tente novamente.")
+            return render_template('login/index.html', form=form)
         infoUsuario = db.NomeUsuario(form.username.data)
         result = db.Login(form.username.data,form.password.data) 
         permissao = result #Resultado é salvo na variável global permissao
@@ -61,6 +62,7 @@ def login():
             return render_template('login/index.html', form=form)
         if(result == 1): #Caso onde um aluno fez login
             usuario = form.username.data #Atualiza ID do usuário
+            curso = db.Curso(infoUsuario)
             #Carrega página adequada
             return redirect(url_for('loginAluno'), code=302) 
         if(result == 2): #Caso onde um professor fez login
@@ -81,10 +83,12 @@ def logoff(): #Limpa todas as informações do usuário
     global materia 
     global usuario
     global permissao
+    global curso
     materia = 0
     usuario = 0
     permissao = 0
     infoUsuario = 0
+    curso = 0
     #Envia para a tela de login
     return redirect(url_for('login'), code=302)
 
@@ -94,10 +98,11 @@ def logoff(): #Limpa todas as informações do usuário
 @app.route('/admin', methods=['GET','POST'])
 def signup():
     global permissao
+    global infoUsuario
     if(permissao != 3): #Caso a permissão do usuário não seja adequada
         #Carrega a página base
         return redirect(url_for('base'), code=302)
-    return render_template('admin/index.html',infoUsuario = infoUsuario)
+    return render_template('admin/index.html', infoUsuario = infoUsuario)
 
 #Tela de Cadastro do aluno
 @app.route('/admin/cadastrar/aluno', methods=['GET','POST'])
@@ -111,8 +116,8 @@ def signupAluno():
     if form.validate_on_submit():
         resultado = db.VerificaUsuario(form.username.data)
         if(resultado == False):
-            db.addNovoAluno(form.username.data,form.password.data,form.curso.data)
-            return render_template('admin/index.html', infoUsuario = infoUsuario)
+            db.addNovoAluno(form.username.data,form.password.data,form.curso.data,form.email.data)
+            return redirect(url_for('signup'), code=302)
         else:
             flash("Aluno já cadastrado. Por favor verifique os dados!")
     return render_template('admin/signupAluno.html', form=form)
@@ -151,7 +156,7 @@ def signupProf():
         #Carrega a página base
         return redirect(url_for('base'), code=302)
     form = registerFormProf()
-    db = DbUtils()
+    db = DbUtils() 
     result = db.ListarProfessores()
     listaM = []
     if(result == False):
@@ -161,8 +166,8 @@ def signupProf():
     if form.validate_on_submit():
         resultado = db.VerificaUsuario(form.username.data)
         if(resultado == False):
-            db.addNovoProfessor(form.username.data,form.password.data,form.afiliacao.data)
-            return render_template('admin/index.html', infoUsuario = infoUsuario)
+            db.addNovoProfessor(form.username.data,form.password.data,form.afiliacao.data,form.email.data)
+            return redirect(url_for('signup'), code=302)
         else:
             flash("Professor já cadastrado. Por favor verifique os dados!")
     return render_template('admin/signupProf.html', form=form, listaM = listaM)
@@ -174,24 +179,35 @@ def addMaterias():
     if(permissao != 3): #Caso a permissão do usuário não seja adequada
         #Carrega a página base
         return redirect(url_for('base'), code=302)
+
     form = registerFormMateria()
     db = DbUtils()
+
     result = db.ListarProfessores()
-    listaM = []
-    if(result == False):
-        listaM = [False]
+    if(result == False): 
+        listaM = [False] #Registra erro
     else:
-        listaM = result
+        listaM = result #Recebe os dados
+
+    HOUR_CHOICES = []
+
+    for row in listaM:
+        HOUR_CHOICES.append([row['nome'],row['nome']]) 
+
+    form.nomeProfessor.choices = HOUR_CHOICES
+
     if form.validate_on_submit():
         rest = db.SelecionarUmProfessor(form.nomeProfessor.data)
         if(rest == False):
             flash("Professor não cadastrado! Por favor tente novamente.")
         else:        
             db.addNovaMateria(form.nomeProfessor.data,form.nomeMateria.data)
-            return render_template('admin/index.html', infoUsuario = infoUsuario)
+            return redirect(url_for('signup'), code=302)
     else:
         print(form.errors)
-    return render_template('admin/addMaterias.html', form=form, listaM = listaM)
+
+    return render_template('admin/addMaterias.html', form=form)
+
 
 #Tela de Remoção do Professor
 @app.route('/admin/deletar/professor', methods=['GET','POST'])
@@ -234,7 +250,7 @@ def excluirProf2():
         data =  request.form['id']
         result = dbUtils.ExcluirProfessor(data)
 
-        return render_template('admin/index.html', infoUsuario = infoUsuario)
+        return redirect(url_for('signup'), code=302)
 
 #Tela de Remoção do Aluno
 @app.route('/admin/deletar/aluno', methods=['GET','POST'])
@@ -277,7 +293,7 @@ def excluirAluno2():
         data =  request.form['id']
         result = dbUtils.ExcluirAluno(data)
 
-        return render_template('admin/index.html', infoUsuario = infoUsuario)
+        return redirect(url_for('signup'), code=302)
 
 #Tela de Remoção de Matéria
 @app.route('/admin/deletar/materia', methods=['GET','POST'])
@@ -288,6 +304,14 @@ def excluirMateria():
         return redirect(url_for('base'), code=302)
     dbUtils = DbUtils()
     listaM = []
+    if request.method == 'POST':
+        dbUtils = DbUtils()
+        data =  request.form['id']
+        result = dbUtils.ExcluirMateria(data)
+        if(result == False):
+            flash("Problemas ao deletar a matéria. Por favor verifique!")
+        else:
+            return redirect(url_for('signup'), code=302)
 
     form = SelectTable()
     if form.validate_on_submit(): #Procurando por um aluno
@@ -307,18 +331,22 @@ def excluirMateria():
     
     return render_template('admin/excluirMaterias.html', listaM = listaM, form = form)
 
-#Tela de Remoção de Matéria 2
-@app.route('/exclusao/03', methods=['GET','POST'])
-def excluirMateria2():
-    global permissao
-    if(permissao != 3): #Caso a permissão do usuário não seja adequada
-        #Carrega a página base
-        return redirect(url_for('base'), code=302)
-    if request.method == 'POST':
-        dbUtils = DbUtils()
-        data =  request.form['id']
-        result = dbUtils.ExcluirMateria(data)
-        return render_template('admin/index.html', infoUsuario = infoUsuario)
+##Tela de Remoção de Matéria 2
+#@app.route('/exclusao/03', methods=['GET','POST'])
+#def excluirMateria2():
+#    global permissao
+#    if(permissao != 3): #Caso a permissão do usuário não seja adequada
+#        #Carrega a página base
+#        return redirect(url_for('base'), code=302)
+#    if request.method == 'POST':
+#        dbUtils = DbUtils()
+#        data =  request.form['id']
+#        result = dbUtils.ExcluirMateria(data)
+#        if(result == False):
+#            flash("Problemas ao deletar a matéria.")
+#        else:
+#            return redirect(url_for('signup'), code=302)
+#    return render_template('admin/excluirMaterias.html', listaM = listaM, form = form)
 
 ##Telas do Professor
 
@@ -453,7 +481,7 @@ def loginAluno():
     if(permissao != 1): #Verifica se tem a permissão de aluno
         #Caso não possua volta para a tela de login
         return redirect(url_for('login'), code=302)
-    return render_template('aluno/index.html')    
+    return render_template('aluno/index.html', infoUsuario = infoUsuario, curso = curso)    
 
 #Tela de cadastro na matricula
 @app.route('/aluno/matricular', methods=['GET','POST'] )
@@ -462,15 +490,32 @@ def matricularMateria():
     if(permissao != 1): #Verifica se tem a permissão de aluno
         #Caso não possua volta para a tela de login
         return redirect(url_for('login'), code=302)
-    
-    form = matriculaMateria()
+
     db = DbUtils()
-    if form.validate_on_submit():
-        db.addNovaNota(usuario,form.nome.data,0)
-        return render_template('aluno/index.html')
+    form = SelectTable()
+    
+    if form.validate_on_submit(): #Procurando por um aluno
+        #Procura todos os alunos com nomes semelhantes
+        result = db.ListarMateriasN(form.nome.data)
+        if(result == False): 
+            listaM = [False] #Registra erro
+        else:
+            listaM = result #Recebe os dados
     else:
-        print(form.errors)
-    return render_template('aluno/matricular.html', form=form)
+        if request.method == 'POST':
+            id_materia = request.form['id']
+            result = db.addNovaNota(usuario,id_materia,0)
+            if(result == True):
+                flash("Matrícula realizada com sucesso!")
+            else:
+                flash("Você já está cadastrado nessa matéria!")
+        result = db.ListarMaterias()
+        if(result == False): 
+            listaM = [False] #Registra erro
+        else:
+            listaM = result #Recebe os dados
+
+    return render_template('aluno/matricular.html', listaM = listaM, form = form)
 
 #Tela de vizualização das matérias do aluno
 @app.route('/aluno/materias')

@@ -5,17 +5,48 @@
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="collapse navbar-collapse" id="conteudoNavbarSuportado">
-        <ul></ul><ul></ul><ul></ul><ul></ul><ul></ul><ul></ul><ul></ul><ul></ul>
-        <ul></ul><ul></ul>
-        <ul class="navbar-nav mr-auto">
-                <h1>Inserção de alunos:</h1>
-        </ul>
-        <form action="{{ url_for('login') }}" method="POST" >
-          <button  class="btn btn-light" type="submit">Voltar</button>
-        </form>
-      </div>
-</nav>
+        
+      
+    <div class="collapse navbar-collapse" id="conteudoNavbarSuportado">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Professores
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="{{ url_for('signupProf')}}">Inserir</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{{ url_for('excluirProf')}}">Remover</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{{ url_for('listarProf')}}">Listar</a>
+          </div>
+        </li>
+        <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Alunos
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" href="{{ url_for('signupAluno')}}">Inserir</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="{{ url_for('excluirAluno')}}">Remover</a>
+                </div>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Matérias
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="{{ url_for('addMaterias')}}">Adicionar</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{{ url_for('excluirMateria')}}">Remover</a>
+          </div>
+  </li>
+      </ul>
+      <form action="{{ url_for('login') }}" class="form-inline my-2 my-lg-0">
+        <a class="btn btn-ligh" href="{{ url_for('logoff') }}">Sair</a>
+      </form>
+    </div>
+  </nav>
 {% for message in get_flashed_messages() %}
         <div class="alert alert-warning"> {{message}}</div>
 {% endfor %}
@@ -38,6 +69,10 @@
                   <br>
                   {{ form.curso(class="form-control", placeholder="Curso") }}
               </div>
+              <div class="form-group">
+                <br>
+                {{ form.email(class="form-control", placeholder="Email", type="email") }}
+            </div>
             
               <button type="submit" class="btn btn-primary">Cadastrar</button>
 

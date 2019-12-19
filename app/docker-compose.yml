@@ -1,0 +1,26 @@
+version: '3'
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    container_name: trabalho_asa
+    depends_on: 
+      - postgres
+    environment:
+        - DBUSER=postgres
+        - DBPASS="banco"
+        - DBHOST=postgres
+        - DBNAME=trab_asa
+  postgres:
+    image: postgres:10
+    environment:
+      POSTGRES_PASSWORD: "banco"
+      POSTGRES_DATABASE: trab_asa
+      POSTGRES_USER: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - /home/vitaotl/bdPostgres:/var/lib/postgresql/data
+        
+

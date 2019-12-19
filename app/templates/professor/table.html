@@ -20,14 +20,23 @@
                 valor = document.getElementById(id_aluno).value;
                 //Inicializa o processo para comunicar com a API
                 var xhr = new XMLHttpRequest();
+
                 /*xhr.onload=function(e) {
-                    alert("teste");
                     if(this.readyState === 4) {
+                        window.location.href = window.location.href;
                     }
                 };*/
+
                 json = '{"aluno_id": "' + id_aluno + '", "mat_id": "' + id_mat + '", "nota": "' + valor + '"}';
                 //json = JSON.stringify({aluno_id: String(id_aluno), mat_id: String(id_mat), nota: String(valor)});
-                var url = 'http://127.0.0.1:5000/db/nota/atualizar';
+                
+                var url1 = window.location.href;
+                var url2 = "{{ url_for('show_notas')}}";
+                var url3 = "{{ url_for('api_updatenotadb')}}";
+                var url = url1.replace(url2,url3);
+
+
+
                 xhr.open('POST',url,true);
                 xhr.setRequestHeader("Content-Type", "application/json");
                 xhr.send(json);
@@ -71,16 +80,6 @@
                                     Editar Nota
                                 </button>
                             </td>
-                            <!--<form method="POST" action="">
-                                <td><input id="aluno" type="number" name="quantity" min="0" max="100" value="{{ lista['nota'] }}" placeholder="{{ lista['nota'] }}"></td>
-                                <input type="hidden" name="mat" id="mat" value="{{ id_mat }}" />
-                                <input type="hidden" name="id" id="id" value="lista['aluno_id'] " />
-                                <td>
-                                    <button id="btn_edit">
-                                        Editar Nota
-                                    </button>
-                                </td>
-                            </form>-->
                         </tr>
                     {% endfor %}
                 </tbody>

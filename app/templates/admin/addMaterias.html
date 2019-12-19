@@ -1,36 +1,71 @@
 {% extends 'base.html'%}
 
 {% block headcontent %}
-  <script type="text/javascript" src="static/js/selectscript.js"></script>
-  <link rel="stylesheet" type="text/css" href="static/css/editablecombobox.css">
 {% endblock %}
 
 {% block content %}
-<title>{% block title %} Adicionar Matérias {% endblock %}</title>
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="">
+  <title>{% block title %} Adicionar Matérias {% endblock %}</title>
+  <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.min.css">
+
+  <script>
+      $(document).ready(function(){
+          $("select.chosen").change(function(){
+              var selectedCountry = $(this).children("option:selected").val()
+          })
+      })
+    </script>
+</head>
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
         
       
-    <div class="collapse navbar-collapse" id="conteudoNavbarSuportado">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Listar professores
-          </a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              {% for row in listaM %}
-            <a class="dropdown-item">Professor: {{row['nome']}}</a>
-            <div class="dropdown-divider"></div>
-            {% endfor %}
-          </div>
-        </li>
-
-      </ul>
-      <form action="{{ url_for('login')}}" method="POST" >
-        <button  class="btn btn-light" type="submit">Voltar</button>
-      </form>
-    </div>
+  <div class="collapse navbar-collapse" id="conteudoNavbarSuportado">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Professores
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="{{ url_for('signupProf')}}">Inserir</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="{{ url_for('excluirProf')}}">Remover</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="{{ url_for('listarProf')}}">Listar</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Alunos
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="{{ url_for('signupAluno')}}">Inserir</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{{ url_for('excluirAluno')}}">Remover</a>
+              </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Matérias
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="{{ url_for('addMaterias')}}">Adicionar</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="{{ url_for('excluirMateria')}}">Remover</a>
+        </div>
+</li>
+    </ul>
+    <form action="{{ url_for('login') }}" class="form-inline my-2 my-lg-0">
+      <a class="btn btn-ligh" href="{{ url_for('logoff') }}">Sair</a>
+    </form>
+  </div>
 </nav>
 
 <div class="container">
@@ -38,7 +73,7 @@
         <div class="alert alert-warning"> {{message}}</div>
     {% endfor %}
       <div style=" width: 50%; margin-left: 300px; margin-top: 50px;">
-          <h2>Cadastro de matérias</h2>
+          <h2>Cadastro de matérias</h2> 
           <form action="{{ url_for('addMaterias')}}" method="POST">
               {{ form.csrf_token }}
               <div class="form-group">
@@ -48,7 +83,8 @@
             
               <div class="form-group">
                   <br>
-                  {{ form.nomeProfessor(class="form-control", placeholder="Nome do professor") }}
+                  Nome do professor: <br>
+                  {{ form.nomeProfessor(class="form-control", placeholder="Nome do professor", class="chosen") }}
               </div>
             
             
@@ -57,19 +93,9 @@
           </form>
     </div>
 </div>
+<script type="text/javascript">
+  $(".chosen").chosen();
+</script> 
 
-<!--<div class="dropdown">
-    <button onclick="myFunction()" class="dropbtn">Dropdown</button>
-    <div id="myDropdown" class="dropdown-content">
-      <input type="text" placeholder="Search.." id="myInput" onkeyup="filterFunction()">
-      <a href="#about">About</a>
-      <a href="#base">Base</a>
-      <a href="#blog">Blog</a>
-      <a href="#contact">Contact</a>
-      <a href="#custom">Custom</a>
-      <a href="#support">Support</a>
-      <a href="#tools">Tools</a>
-    </div>
-</div> -->
 
 {% endblock %}
